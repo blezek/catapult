@@ -111,6 +111,7 @@ tr.exportTo('tr.ui', function() {
         this.onModelTrackControllerScroll_.bind(this);
 
     this.timeMode_ = TimelineViewport.TimeMode.TIME_IN_MS;
+    this.timeMode_ = TimelineViewport.TimeMode.DATE_TIME;
     // Major mark positions are where the gridlines/ruler marks are placed along
     // the x-axis.
     this.majorMarkWorldPositions_ = [];
@@ -125,7 +126,8 @@ tr.exportTo('tr.ui', function() {
 
   TimelineViewport.TimeMode = {
     TIME_IN_MS: 0,
-    REVISIONS: 1
+    REVISIONS: 1,
+    DATE_TIME: 2
   };
 
   TimelineViewport.prototype = {
@@ -299,9 +301,18 @@ tr.exportTo('tr.ui', function() {
           return tr.b.Unit.byName.timeInMsAutoFormat;
         case TimelineViewport.TimeMode.REVISIONS:
           return tr.b.Unit.byName.count;
+        case TimelineViewport.TimeMode.DATE_TIME:
+          return {
+            format: function(v,opts) {
+              console.log(v,opts);
+              const d = new Date ( v*1000 );
+              return d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+              return "ts";
+            }
+          }
         default:
           throw new Error(
-              'Cannot get Unit for unsupported time mode ' + this.timeMode_);
+            'Cannot get Unit for unsupported time mode ' + this.timeMode_);
       }
     },
 
